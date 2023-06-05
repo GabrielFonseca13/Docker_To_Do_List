@@ -1,11 +1,36 @@
-version: 'X'
+version: '3.8'
 services:
-  app_A:
-    # ...
-    # parâmetros
-    # ...
-  app_B:
-    # ...
-    # parâmetros
-    # ...
-  # ...
+  front-end:
+    image: todofrontend
+    environment:
+      - REACT_APP_API_HOST: localhost
+        REACT_APP_API_PORT: 3001
+    ports:
+      - 3000:3000
+    depends_on:
+      - back-end
+    restart: on-failure
+    networks:
+      - network1
+
+  back-end:
+    image: todobackend
+    ports:
+      - 3001:3001
+    networks:
+      - network1
+
+
+  tests:
+    image: todotests
+    environment:
+      - FRONT_HOST: localhost
+        FRONT_PORT: 3000
+    depends_on:
+      - front-end
+        back-end
+    networks:
+      - network1
+
+  networks:
+    -network1:
